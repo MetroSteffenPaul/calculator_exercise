@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
 
+import static org.mockito.Mockito.verify;
+
 public class BasketCalculatorServiceTest {
 
     private static final String ARTICLE_1 = "article-1";
@@ -87,5 +89,37 @@ public class BasketCalculatorServiceTest {
         Assertions.assertThat(result.getCustomerId()).isEqualTo(CUSTOMER_1);
         Assertions.assertThat(result.getPricedBasketEntries()).isEqualTo(prices);
         Assertions.assertThat(result.getTotalAmount()).isEqualByComparingTo(new BigDecimal("11.78"));
+        verify(mockPriceRepository).getPriceByArticleId(ARTICLE_1);
+        verify(mockPriceRepository).getPriceByArticleId(ARTICLE_2);
+        verify(mockPriceRepository).getPriceByArticleId(ARTICLE_3);
+    }
+
+    @Test
+    public void testCalculateBasket_withCustomerId() {
+        // GIVEN
+        Basket basket = new Basket(CUSTOMER_1, Set.of(
+                new BasketEntry(ARTICLE_1, BigDecimal.ONE),
+                new BasketEntry(ARTICLE_2, BigDecimal.ONE),
+                new BasketEntry(ARTICLE_3, BigDecimal.ONE)));
+
+        Map<String, BigDecimal> prices = Map.of(
+                ARTICLE_1, new BigDecimal("0.50"),
+                ARTICLE_2, new BigDecimal("8.29"),
+                ARTICLE_3, new BigDecimal("6.99"));
+
+        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId(ARTICLE_1, CUSTOMER_1)).thenReturn(prices.get(ARTICLE_1));
+        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId(ARTICLE_2, CUSTOMER_1)).thenReturn(prices.get(ARTICLE_2));
+        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId(ARTICLE_3, CUSTOMER_1)).thenReturn(prices.get(ARTICLE_3));
+
+        // WHEN
+        BasketCalculationResult result = service.calculateBasket(basket);
+
+        // THEN
+        Assertions.assertThat(result.getCustomerId()).isEqualTo(CUSTOMER_1);
+        Assertions.assertThat(result.getPricedBasketEntries()).isEqualTo(prices);
+        Assertions.assertThat(result.getTotalAmount()).isEqualByComparingTo(new BigDecimal("15.78"));
+        verify(mockPriceRepository).getPriceByArticleIdAndCustomerId(ARTICLE_1, CUSTOMER_1);
+        verify(mockPriceRepository).getPriceByArticleIdAndCustomerId(ARTICLE_2, CUSTOMER_1);
+        verify(mockPriceRepository).getPriceByArticleIdAndCustomerId(ARTICLE_3, CUSTOMER_1);
     }
 }
