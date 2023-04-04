@@ -1,4 +1,4 @@
-package digital.metro.pricing.calculator;
+package digital.metro.pricing.calculator.view;
 
 import java.math.BigDecimal;
 import java.util.Map;

@@ -1,9 +1,12 @@
-package digital.metro.pricing.calculator;
+package digital.metro.pricing.calculator.controller;
 
+import digital.metro.pricing.calculator.model.Basket;
+import digital.metro.pricing.calculator.service.BasketCalculatorService;
+import digital.metro.pricing.calculator.view.BasketCalculationResult;
+import digital.metro.pricing.calculator.model.BasketEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.math.BigDecimal;
 
 @RestController
