@@ -16,8 +16,8 @@ public class PriceRepository {
 
     public static final String CUSTOMER1_RATE = "0.90";
     public static final String CUSTOMER2_RATE = "0.85";
-    private Map<String, BigDecimal> prices = new HashMap<>();
-    private Random random = new Random();
+    private final Map<String, BigDecimal> prices = new HashMap<>();
+    private final Random random = new Random();
 
     public BigDecimal getPriceByArticleId(String articleId) {
         return prices.computeIfAbsent(articleId,
@@ -27,11 +27,9 @@ public class PriceRepository {
     public BigDecimal getPriceByArticleIdAndCustomerId(String articleId, String customerId) {
         switch(customerId) {
             case "customer-1":
-                BigDecimal price1 = getPriceByArticleId(articleId).multiply(new BigDecimal(CUSTOMER1_RATE)).setScale(2, RoundingMode.HALF_UP);
-                return price1;
+                return getPriceByArticleId(articleId).multiply(new BigDecimal(CUSTOMER1_RATE)).setScale(2, RoundingMode.HALF_UP);
             case "customer-2":
-                BigDecimal price12=  getPriceByArticleId(articleId).multiply(new BigDecimal(CUSTOMER2_RATE)).setScale(2, RoundingMode.HALF_UP);
-                return price12;
+                return getPriceByArticleId(articleId).multiply(new BigDecimal(CUSTOMER2_RATE)).setScale(2, RoundingMode.HALF_UP);
         }
 
         return getPriceByArticleId(articleId);

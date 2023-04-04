@@ -23,6 +23,7 @@ public class BasketCalculatorServiceTest {
     private PriceRepository mockPriceRepository;
 
     private BasketCalculatorService service;
+    private final BigDecimal CUSTOMER1_RATE  = new BigDecimal("0.90");
 
     @BeforeEach
     public void init() {
@@ -92,9 +93,9 @@ public class BasketCalculatorServiceTest {
                 "article-2", new BigDecimal("0.29"),
                 "article-3", new BigDecimal("9.99"));
 
-        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-1", customerId)).thenReturn(prices.get("article-1").multiply(new BigDecimal(0.90)).setScale(2, RoundingMode.HALF_UP));
-        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-2", customerId)).thenReturn(prices.get("article-2").multiply(new BigDecimal(0.90)).setScale(2, RoundingMode.HALF_UP));
-        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-3", customerId)).thenReturn(prices.get("article-3").multiply(new BigDecimal(0.90)).setScale(2, RoundingMode.HALF_UP));
+        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-1", customerId)).thenReturn(prices.get("article-1").multiply(CUSTOMER1_RATE).setScale(2, RoundingMode.HALF_UP));
+        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-2", customerId)).thenReturn(prices.get("article-2").multiply(CUSTOMER1_RATE).setScale(2, RoundingMode.HALF_UP));
+        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-3", customerId)).thenReturn(prices.get("article-3").multiply(CUSTOMER1_RATE).setScale(2, RoundingMode.HALF_UP));
 
 
         // WHEN
@@ -120,9 +121,9 @@ public class BasketCalculatorServiceTest {
                 "article-2", new BigDecimal("0.29"),
                 "article-3", new BigDecimal("9.99"));
 
-        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-1", customerId)).thenReturn(prices.get("article-1").multiply(new BigDecimal(0.90)).setScale(2, RoundingMode.HALF_UP));
-        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-2", customerId)).thenReturn(prices.get("article-2").multiply(new BigDecimal(0.90)).setScale(2, RoundingMode.HALF_UP));
-        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-3", customerId)).thenReturn(prices.get("article-3").multiply(new BigDecimal(0.90)).setScale(2, RoundingMode.HALF_UP));
+        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-1", customerId)).thenReturn(prices.get("article-1").multiply(CUSTOMER1_RATE).setScale(2, RoundingMode.HALF_UP));
+        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-2", customerId)).thenReturn(prices.get("article-2").multiply(CUSTOMER1_RATE).setScale(2, RoundingMode.HALF_UP));
+        Mockito.when(mockPriceRepository.getPriceByArticleIdAndCustomerId("article-3", customerId)).thenReturn(prices.get("article-3").multiply(CUSTOMER1_RATE).setScale(2, RoundingMode.HALF_UP));
 
 
         // WHEN
