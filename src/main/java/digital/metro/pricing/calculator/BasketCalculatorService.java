@@ -38,6 +38,6 @@ public class BasketCalculatorService {
                 return customerPrice;
             }
         }
-        return priceRepository.getpricebyarticleId(ArticleId);
+        return priceRepository.getPriceByArticleId(ArticleId);
     }
 }
