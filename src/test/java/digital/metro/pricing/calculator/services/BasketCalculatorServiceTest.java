@@ -58,7 +58,7 @@ public class BasketCalculatorServiceTest {
         String customerId = "customer-1";
 
         when(priceRepository.getPriceByArticleId(articleId)).thenReturn(standardPrice);
-        when(priceRepository.getPriceByArticleId(articleId)).thenReturn(customerPrice);
+        when(promotionsService.promotionFor(customerId)).thenReturn(new BigDecimal("0.87459900845")); // 29.99/34.29
 
         // WHEN
         BigDecimal result = service.calculateArticle(new BasketEntry(articleId, BigDecimal.ONE), "customer-1");
@@ -80,9 +80,10 @@ public class BasketCalculatorServiceTest {
                 "article-2", new BigDecimal("0.29"),
                 "article-3", new BigDecimal("9.99"));
 
-        when(priceRepository.getPriceByArticleId("article-1")).thenReturn(prices.get("article-1"));
-        when(priceRepository.getPriceByArticleId("article-2")).thenReturn(prices.get("article-2"));
-        when(priceRepository.getPriceByArticleId("article-3")).thenReturn(prices.get("article-3"));
+        // here we could have used stubs, and have the repository class accept the initial price map
+        // as dependency
+
+        prices.keySet().forEach(article -> when(priceRepository.getPriceByArticleId(article)).thenReturn(prices.get(article)));
 
         // WHEN
         BasketCalculationResult result = service.calculateBasket(basket);
