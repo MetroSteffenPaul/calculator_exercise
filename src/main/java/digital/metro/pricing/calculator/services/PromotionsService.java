@@ -31,7 +31,7 @@ public class PromotionsService {
      * @return the registered promotional factor or 1 if no promotion for that customer
      */
     public BigDecimal promotionFor(String customerId) {
-        return promotionsByCustomer.getOrDefault(customerId, BigDecimal.ONE);
+        return customerId != null ? promotionsByCustomer.getOrDefault(customerId, BigDecimal.ONE) : BigDecimal.ONE;
     }
 
 }
