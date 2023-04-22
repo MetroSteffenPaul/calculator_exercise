@@ -8,24 +8,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toMap;
 
 @Service
 public class BasketCalculatorService {
 
     private PriceRepository priceRepository;
 
+    private PromotionsService promotionsService;
+
     @Autowired
-    public BasketCalculatorService(PriceRepository priceRepository) {
+    public BasketCalculatorService(PriceRepository priceRepository, PromotionsService promotionsService) {
         this.priceRepository = priceRepository;
+        this.promotionsService = promotionsService;
     }
 
     public BasketCalculationResult calculateBasket(Basket basket) {
+
         Map<String, BigDecimal> pricedArticles =
                 basket.getEntries()
                         .stream()
-                        .collect(Collectors.toMap(
+                        .collect(toMap(
                                 BasketEntry::getArticleId,
                                 entry -> calculateArticle(entry, basket.getCustomerId())));
 
@@ -35,12 +41,10 @@ public class BasketCalculatorService {
     public BigDecimal calculateArticle(BasketEntry basketEntry, String customerId) {
         String articleId = basketEntry.getArticleId();
 
-        if (customerId != null) {
-            BigDecimal customerPrice = priceRepository.getPriceByArticleIdAndCustomerId(articleId, customerId);
-            if (customerPrice != null) {
-                return customerPrice;
-            }
-        }
-        return priceRepository.getPriceByArticleId(articleId);
+        return applyPromotion(priceRepository.getPriceByArticleId(articleId), customerId);
+    }
+
+    private BigDecimal applyPromotion(BigDecimal price, String customerId) {
+        return promotionsService.promotionFor(customerId).multiply(price).setScale(2, RoundingMode.HALF_UP);
     }
 }

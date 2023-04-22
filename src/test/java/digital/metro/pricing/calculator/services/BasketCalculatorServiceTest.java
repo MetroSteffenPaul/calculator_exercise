@@ -15,19 +15,24 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 public class BasketCalculatorServiceTest {
 
     @Mock
-    private PriceRepository mockPriceRepository;
+    private PriceRepository priceRepository;
+
+    @Mock
+    private PromotionsService promotionsService;
 
     private BasketCalculatorService service;
 
     @BeforeEach
     public void init() {
         MockitoAnnotations.openMocks(this);
-        service = new BasketCalculatorService(mockPriceRepository);
+        service = new BasketCalculatorService(priceRepository, promotionsService);
+        when(promotionsService.promotionFor(nullable(String.class))).thenReturn(BigDecimal.ONE);
     }
 
     @Test
@@ -35,7 +40,7 @@ public class BasketCalculatorServiceTest {
         // GIVEN
         String articleId = "article-1";
         BigDecimal price = new BigDecimal("34.29");
-        when(mockPriceRepository.getPriceByArticleId(articleId)).thenReturn(price);
+        when(priceRepository.getPriceByArticleId(articleId)).thenReturn(price);
 
         // WHEN
         BigDecimal result = service.calculateArticle(new BasketEntry(articleId, BigDecimal.ONE), null);
@@ -52,8 +57,8 @@ public class BasketCalculatorServiceTest {
         BigDecimal customerPrice = new BigDecimal("29.99");
         String customerId = "customer-1";
 
-        when(mockPriceRepository.getPriceByArticleId(articleId)).thenReturn(standardPrice);
-        when(mockPriceRepository.getPriceByArticleIdAndCustomerId(articleId, customerId)).thenReturn(customerPrice);
+        when(priceRepository.getPriceByArticleId(articleId)).thenReturn(standardPrice);
+        when(priceRepository.getPriceByArticleId(articleId)).thenReturn(customerPrice);
 
         // WHEN
         BigDecimal result = service.calculateArticle(new BasketEntry(articleId, BigDecimal.ONE), "customer-1");
@@ -75,9 +80,9 @@ public class BasketCalculatorServiceTest {
                 "article-2", new BigDecimal("0.29"),
                 "article-3", new BigDecimal("9.99"));
 
-        when(mockPriceRepository.getPriceByArticleId("article-1")).thenReturn(prices.get("article-1"));
-        when(mockPriceRepository.getPriceByArticleId("article-2")).thenReturn(prices.get("article-2"));
-        when(mockPriceRepository.getPriceByArticleId("article-3")).thenReturn(prices.get("article-3"));
+        when(priceRepository.getPriceByArticleId("article-1")).thenReturn(prices.get("article-1"));
+        when(priceRepository.getPriceByArticleId("article-2")).thenReturn(prices.get("article-2"));
+        when(priceRepository.getPriceByArticleId("article-3")).thenReturn(prices.get("article-3"));
 
         // WHEN
         BasketCalculationResult result = service.calculateBasket(basket);
