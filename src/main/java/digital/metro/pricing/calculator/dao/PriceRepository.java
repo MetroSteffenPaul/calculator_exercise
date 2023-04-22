@@ -14,8 +14,8 @@ import java.util.Random;
 @Component
 public class PriceRepository {
 
-    private Map<String, BigDecimal> prices = new HashMap<>();
-    private Random random = new Random();
+    private final Map<String, BigDecimal> prices = new HashMap<>();
+    private final Random random = new Random();
 
     public BigDecimal getPriceByArticleId(String articleId) {
         return prices.computeIfAbsent(articleId,

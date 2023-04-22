@@ -3,9 +3,18 @@ package digital.metro.pricing.calculator.api;
 import java.math.BigDecimal;
 import java.util.Map;
 
+import static java.util.Collections.unmodifiableMap;
+
+/**
+ * Shopping Basket total amounts: grand total + total by article
+ */
 public class BasketCalculationResult {
 
     private String customerId;
+
+    /**
+     * Totals by article: key = articleId, value = total (price * quantity) for that article
+     */
     private Map<String, BigDecimal> pricedBasketEntries;
     private BigDecimal totalAmount;
 
@@ -14,7 +23,7 @@ public class BasketCalculationResult {
 
     public BasketCalculationResult(String customerId, Map<String, BigDecimal> pricedBasketEntries, BigDecimal totalAmount) {
         this.customerId = customerId;
-        this.pricedBasketEntries = pricedBasketEntries;
+        this.pricedBasketEntries = pricedBasketEntries != null ? unmodifiableMap(pricedBasketEntries) : Map.of();
         this.totalAmount = totalAmount;
     }
 
