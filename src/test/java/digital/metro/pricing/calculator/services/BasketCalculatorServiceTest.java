@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,5 +85,15 @@ public class BasketCalculatorServiceTest {
         Assertions.assertThat(result.getCustomerId()).isEqualTo("customer-1");
         Assertions.assertThat(result.getPricedBasketEntries()).isEqualTo(prices);
         Assertions.assertThat(result.getTotalAmount()).isEqualByComparingTo(new BigDecimal("12.78"));
+    }
+
+    @Test
+    public void testBasketEntrySets() {
+        Set<BasketEntry> entries = new HashSet<>();
+
+        entries.add(new BasketEntry("article1", BigDecimal.ONE));
+        entries.add(new BasketEntry("article1", new BigDecimal("1.0")));
+
+        Assertions.assertThat(entries).hasSize(1);
     }
 }

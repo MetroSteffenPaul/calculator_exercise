@@ -27,4 +27,23 @@ public class BasketEntry {
     public BigDecimal getQuantity() {
         return quantity;
     }
+
+    @Override
+    public int hashCode() {
+        return articleId.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof BasketEntry)) {
+            return false;
+        }
+        if (this == other) {
+            return true;
+        }
+
+        BasketEntry entry = (BasketEntry) other;
+
+        return entry.articleId.equals(articleId);
+    }
 }
