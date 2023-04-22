@@ -1,5 +1,9 @@
-package digital.metro.pricing.calculator;
+package digital.metro.pricing.calculator.services;
 
+import digital.metro.pricing.calculator.api.Basket;
+import digital.metro.pricing.calculator.api.BasketCalculationResult;
+import digital.metro.pricing.calculator.api.BasketEntry;
+import digital.metro.pricing.calculator.dao.PriceRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

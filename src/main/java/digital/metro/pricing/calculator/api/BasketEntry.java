@@ -1,4 +1,4 @@
-package digital.metro.pricing.calculator;
+package digital.metro.pricing.calculator.api;
 
 import java.math.BigDecimal;
 
