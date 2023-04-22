@@ -21,10 +21,14 @@ public class BasketCalculationResult {
     private BasketCalculationResult() {
     }
 
-    public BasketCalculationResult(String customerId, Map<String, BigDecimal> pricedBasketEntries, BigDecimal totalAmount) {
+    public BasketCalculationResult(String customerId, Map<String, BigDecimal> pricedBasketEntries) {
         this.customerId = customerId;
         this.pricedBasketEntries = pricedBasketEntries != null ? unmodifiableMap(pricedBasketEntries) : Map.of();
-        this.totalAmount = totalAmount;
+        this.totalAmount = calculateTotalAmount();
+    }
+
+    private BigDecimal calculateTotalAmount() {
+        return this.pricedBasketEntries.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public String getCustomerId() {
