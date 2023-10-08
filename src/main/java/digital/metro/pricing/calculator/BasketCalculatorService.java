@@ -5,12 +5,13 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class BasketCalculatorService {
 
-    private PriceRepository priceRepository;
+    private final PriceRepository priceRepository;
 
     @Autowired
     public BasketCalculatorService(PriceRepository priceRepository) {
@@ -18,26 +19,23 @@ public class BasketCalculatorService {
     }
 
     public BasketCalculationResult calculateBasket(Basket basket) {
-        Map<String, BigDecimal> pricedArticles = basket.getEntries().stream()
-                .collect(Collectors.toMap(
-                        BasketEntry::getArticleId,
-                        entry -> calculateArticle(entry, basket.getCustomerId())));
-
-        BigDecimal totalAmount = pricedArticles.values().stream()
-                .reduce(BigDecimal.ONE, (a, b) -> a.add(b));
-
-        return new BasketCalculationResult(basket.getCustomerId(), pricedArticles, totalAmount);
+        updateBasketWithPrices(basket);
+        return new BasketCalculationResult(basket.getCustomerId(), basket.getEntries(), basket.calculateTotalAmount());
     }
 
-    public BigDecimal calculateArticle(BasketEntry be, String customerId) {
-        String ArticleId = be.getArticleId();
-
+    public BigDecimal calculateArticle(BasketEntry be, CustomerId customerId) {
+        ArticleId articleId = be.getArticleId();
+        Optional<BigDecimal> customerPrice = Optional.empty();
         if (customerId != null) {
-            BigDecimal customerPrice = priceRepository.getPriceByArticleIdAndCustomerId(ArticleId, customerId);
-            if (customerPrice != null) {
-                return customerPrice;
-            }
+            customerPrice = priceRepository.getPriceByArticleIdAndCustomerId(articleId, customerId);
         }
-        return priceRepository.getpricebyarticleId(ArticleId);
+        return customerPrice.orElse(priceRepository.getPriceByArticleId(articleId));
+    }
+
+    private void updateBasketWithPrices(Basket basket) {
+        basket.getEntries()
+                .forEach(be ->
+                    be.updatePrice(calculateArticle(be, basket.getCustomerId()))
+                );
     }
 }

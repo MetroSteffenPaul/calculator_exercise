@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -17,19 +18,20 @@ public class PriceRepository {
     private Map<String, BigDecimal> prices = new HashMap<>();
     private Random random = new Random();
 
-    public BigDecimal getpricebyarticleId(String articleId) {
-        return prices.computeIfAbsent(articleId,
-                key -> BigDecimal.valueOf(0.5d + random.nextDouble() * 29.50d).setScale(2, RoundingMode.HALF_UP));
+    public BigDecimal getPriceByArticleId(ArticleId articleId) {
+        var res = BigDecimal.valueOf(0.5d + random.nextDouble() * 29.50d).setScale(2, RoundingMode.HALF_UP);
+        return prices.computeIfAbsent(articleId.getId(),
+                key -> res);
     }
 
-    public BigDecimal getPriceByArticleIdAndCustomerId(String id1, String id2) {
-        switch(id2) {
+    public Optional<BigDecimal> getPriceByArticleIdAndCustomerId(ArticleId articleId, CustomerId customerId) {
+        switch(customerId.getId()) {
             case "customer-1":
-                return getpricebyarticleId(id1).multiply(new BigDecimal("0.90")).setScale(2, RoundingMode.HALF_UP);
+                return Optional.of(getPriceByArticleId(articleId).multiply(new BigDecimal("0.90")).setScale(2, RoundingMode.HALF_UP));
             case "customer-2":
-                return getpricebyarticleId(id1).multiply(new BigDecimal("0.85")).setScale(2, RoundingMode.HALF_UP);
+                return Optional.of(getPriceByArticleId(articleId).multiply(new BigDecimal("0.85")).setScale(2, RoundingMode.HALF_UP));
         }
 
-        return null;
+        return Optional.empty();
     }
 }

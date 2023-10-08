@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @RestController
 public class CalculatorResource {
 
-    private BasketCalculatorService basketCalculatorService;
+    private final BasketCalculatorService basketCalculatorService;
 
     @Autowired
     public CalculatorResource(BasketCalculatorService basketCalculatorService) {
@@ -23,11 +23,11 @@ public class CalculatorResource {
 
     @GetMapping("/calculator/article/{articleId}")
     public BigDecimal getArticlePrice(@PathVariable String articleId) {
-        return basketCalculatorService.calculateArticle(new BasketEntry(articleId, BigDecimal.ONE), null);
+        return basketCalculatorService.calculateArticle(new BasketEntry(new ArticleId(articleId), BigDecimal.ONE), null);
     }
 
     @GetMapping("/calculator/getarticlepriceforcustomer")
     public BigDecimal getArticlePriceForCustomer(@RequestParam String articleId, @RequestParam String customerId) {
-        return basketCalculatorService.calculateArticle(new BasketEntry(articleId, BigDecimal.ONE), customerId);
+        return basketCalculatorService.calculateArticle(new BasketEntry(new ArticleId(articleId), BigDecimal.ONE), new CustomerId(customerId));
     }
 }
